@@ -1,0 +1,30 @@
+﻿<UserControl x:Name="userControl" x:Class="Hywire.ImageProcessing.ImageDisplayer.View.ImageGallery"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:avalonDock="clr-namespace:AvalonDock;assembly=AvalonDock"
+             xmlns:avalonDockMVVM="clr-namespace:AvalonDockMVVM;assembly=AvalonDockMVVM"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
+             mc:Ignorable="d" 
+             DataContext="{Binding Path=ImageGalleryVM}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <!--Border>
+            <AdornerDecorator>
+                <avalonDockMVVM:AvalonDockHost
+                        x:Name="AvalonDockHost"
+                        ActiveDocument="{Binding ActiveDocument}"
+                        ActivePane="{Binding ActivePane}"
+                        AvalonDockLoaded="avalonDockHost_AvalonDockLoaded"
+                        DocumentClosing="avalonDockHost_DocumentClosing"
+                        Documents="{Binding Files}"
+                        ForceCursor="True"
+                        Panes="{Binding Panes}" />
+            </AdornerDecorator>
+        </-->
+        <Border Background="White">
+            <Image x:Name="image" Source="{Binding Path=DisplayImage}"/>
+        </Border>
+    </Grid>
+</UserControl>

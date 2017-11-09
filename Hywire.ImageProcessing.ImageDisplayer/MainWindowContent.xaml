@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="Hywire.ImageProcessing.ImageDisplayer.MainWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:Fluent="urn:fluent-ribbon"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.ViewModel"
+             xmlns:view="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance local:Workspace, IsDesignTimeCreatable=True}"
+             d:DesignHeight="600" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Fluent:Ribbon AutomaticStateManagement="True"
+                       x:Name="ribbon">
+            <Fluent:Ribbon.Menu>
+                <Fluent:Backstage>
+                    <Fluent:BackstageTabControl>
+                        <Fluent:Button Header="Open"
+                                       Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Open.png"
+                                       Command="{Binding Path=OpenImageCommand}"
+                                       KeyTip="S" />
+                        <Fluent:SeparatorTabItem/>
+                        <Fluent:Button Header="Save"
+                                           Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Save.png"
+                                           KeyTip="S" />
+                        <Fluent:Button Header="Save As"
+                                           Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Save.png"
+                                           KeyTip="A"
+                                           />
+                        <Fluent:SeparatorTabItem/>
+                        <Fluent:Button Header="Close"
+                                       Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Exit.png"
+                                       Command="{Binding Path=CloseImageCommand}"
+                                       KeyTip="S" />
+                    </Fluent:BackstageTabControl>
+                </Fluent:Backstage>
+            </Fluent:Ribbon.Menu>
+            <Fluent:Ribbon.QuickAccessItems>
+                <Fluent:QuickAccessMenuItem>
+                    <Fluent:Button Header="haha"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Pink.png"/>
+                </Fluent:QuickAccessMenuItem>
+            </Fluent:Ribbon.QuickAccessItems>
+            <Fluent:RibbonTabItem x:Name="homeTabItem"
+                                  Header="Home"
+                                  KeyTip="H"
+                                  ToolTip="Regular Tool Tip">
+                <Fluent:RibbonGroupBox x:Name="themesGroupBox"
+                                       Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Default.png"
+                                       Header="Themes (Office 2010)">
+                    <Fluent:Button x:Name="silverThemeBtn"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/SilverTheme.png"
+                                   SizeDefinition="Middle" Click="silverThemeBtn_Click">Silver</Fluent:Button>
+                    <Fluent:Button x:Name="blackThemeBtn"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/BlackTheme.png"
+                                   SizeDefinition="Middle" Click="blackThemeBtn_Click">Black</Fluent:Button>
+                    <Fluent:Button x:Name="blueThemeBtn"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/BlueTheme.png"
+                                   SizeDefinition="Middle" Click="blueThemeBtn_Click">Blue</Fluent:Button>
+                    <Fluent:CheckBox x:Name="DontUseDwm" Click="DontUseDwm_Click">Don't use DWM</Fluent:CheckBox>
+                </Fluent:RibbonGroupBox>
+            </Fluent:RibbonTabItem>
+        </Fluent:Ribbon>
+
+        <Border Grid.Row="1">
+            <view:ImageGallery x:Name="imageGallery"/>
+        </Border>
+
+        <Fluent:StatusBar Grid.Row="2">
+            
+        </Fluent:StatusBar>
+    </Grid>
+</UserControl>

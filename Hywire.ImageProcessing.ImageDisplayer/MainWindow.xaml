@@ -1,0 +1,15 @@
+﻿<Fluent:RibbonWindow x:Class="Hywire.ImageProcessing.ImageDisplayer.MainWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer"
+                     mc:Ignorable="d"
+                     DontUseDwm="False"
+                     WindowState="Normal"
+                     Title="{Binding DataContext.Title, ElementName=mainWindow}" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <local:MainWindowContent x:Name="mainWindow"/>
+    </Grid>
+</Fluent:RibbonWindow>
