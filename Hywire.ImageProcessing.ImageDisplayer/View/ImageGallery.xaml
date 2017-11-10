@@ -24,7 +24,7 @@
             </AdornerDecorator>
         </-->
         <Border Background="White">
-            <Image x:Name="image" Source="{Binding Path=DisplayImage}"/>
+            <Image x:Name="image" Source="{Binding Path=DisplayImage, IsAsync=True}"/>
         </Border>
     </Grid>
 </UserControl>

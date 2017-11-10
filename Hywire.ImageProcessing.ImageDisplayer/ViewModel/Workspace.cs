@@ -10,16 +10,44 @@ using System.Windows.Media.Imaging;
 using System.Windows.Controls;
 using System.IO;
 using System.Windows.Media;
+using System.Drawing;
+using System.Windows;
+using System.Threading;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
 {
     public class Workspace : ViewModelBase
     {
+        [DllImport("psapi.dll")]
+        static extern int EmptyWorkingSet(IntPtr hwProc);
+        public static void ClearMemory(Process process)
+        {  
+            GC.Collect();  
+            GC.WaitForPendingFinalizers();
+            if ((process.ProcessName == "System") && (process.ProcessName == "Idle"))
+            {
+                return;
+            }
+            try
+            {
+                EmptyWorkingSet(process.Handle);
+            }
+            catch
+            {
+            }
+        }
+
         #region Private Fields
+        const string SoftwareName = "Hywire Image Displayer";
+        string _Title = string.Empty;
+
         ImageGalleryViewModel _ImageGalleryVM = null;
 
         RelayCommand _OpenImageCommand = null;
         RelayCommand _CloseImageCommand = null;
+        RelayCommand _ReleaseMemoryCommand = null;
         #endregion Private Fields
 
         static Workspace _this = new Workspace();
@@ -30,7 +58,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         }
         public Workspace()
         {
-            Title = "Hywire Image Displayer";
+            Title = SoftwareName;
             _ImageGalleryVM = new ImageGalleryViewModel();
         }
 
@@ -51,6 +79,8 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             OpenFileDialog opDlg = new OpenFileDialog();
             if (opDlg.ShowDialog() == true)
             {
+                //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
+                //GC.Collect();
                 BitmapImage image = new BitmapImage();
                 using (FileStream fs = File.OpenRead(opDlg.FileName))
                 {
@@ -58,16 +88,20 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                     image.CacheOption = BitmapCacheOption.OnLoad;
                     image.StreamSource = fs;
                     image.EndInit();
+                    ImageGalleryVM.DisplayImage = image;
                 }
-                ImageGalleryVM.DisplayImage = image;
+                Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
                 //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
             }
+            Task.Run(() =>
+            {
+            });
         }
         public bool CanExecuteOpenImageComand(object parameter)
         {
             return true;
         }
-        public static WriteableBitmap LoadImage(string @sFileName)
+        private WriteableBitmap LoadWriteableImage(string @sFileName)
         {
             BitmapImage bitmap = null;
             WriteableBitmap wbBitmap = null;
@@ -94,6 +128,15 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
 
             return wbBitmap;
         }
+        public BitmapImage LoadImage(string @sFileName)
+        {
+            BitmapImage bitmap = new BitmapImage();
+            bitmap.BeginInit();
+            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.StreamSource = new MemoryStream(File.ReadAllBytes(@sFileName));
+            bitmap.EndInit();
+            return bitmap;
+        }
         #endregion OpenImageCommand
 
         #region CloseImageCommand
@@ -110,7 +153,13 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         }
         public void ExecuteCloseImageCommand(object parameter)
         {
-            ImageGalleryVM.DisplayImage = null;
+            Task.Run(() =>
+            {
+                ImageGalleryVM.DisplayImage = null;
+                Thread.Sleep(1000);     // wait for UI thread to release resources
+                Title = SoftwareName;
+                ClearMemory(Process.GetCurrentProcess());
+            });
         }
         public bool CanExecuteCloseImageCommand(object parameter)
         {
@@ -118,8 +167,56 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         }
         #endregion CloseImageCommand
 
+        #region ReleaseMemoryCommand
+        public ICommand ReleaseMemoryCommand
+        {
+            get
+            {
+                if (_ReleaseMemoryCommand == null)
+                {
+                    _ReleaseMemoryCommand = new RelayCommand(ExecuteReleaseMemoryCommand, CanExecuteReleaseMemoryCommand);
+                }
+                return _ReleaseMemoryCommand;
+            }
+        }
+        public void ExecuteReleaseMemoryCommand(object parameter)
+        {
+            string strPara = (string)parameter;
+            if (strPara == "Self")
+            {
+                ClearMemory(Process.GetCurrentProcess());
+            }
+            else if (strPara == "All")
+            {
+                Process[] processes = Process.GetProcesses();
+                foreach (Process process in processes)
+                {
+                    ClearMemory(process);
+                }
+            }
+        }
+        public bool CanExecuteReleaseMemoryCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion ReleaseMemoryCommand
+
         #region Public Properties
-        public string Title { get; set; }
+        public string Title
+        {
+            get
+            {
+                return _Title;
+            }
+            set
+            {
+                if (_Title != value)
+                {
+                    _Title = value;
+                    RaisePropertyChanged("Title");
+                }
+            }
+        }
         public MainWindow Owner { get; set; }
         public ImageGalleryViewModel ImageGalleryVM
         {

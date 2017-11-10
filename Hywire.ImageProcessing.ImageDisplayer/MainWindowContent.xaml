@@ -64,6 +64,21 @@
                                    SizeDefinition="Middle" Click="blueThemeBtn_Click">Blue</Fluent:Button>
                     <Fluent:CheckBox x:Name="DontUseDwm" Click="DontUseDwm_Click">Don't use DWM</Fluent:CheckBox>
                 </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox x:Name="memoryGroupBox"
+                                       Width="150"
+                                       Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Default.png"
+                                       Header="Memory management">
+                    <Fluent:Button x:Name="releaseSelfMmryBtn"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Green.png"
+                                   Command="{Binding Path=ReleaseMemoryCommand}"
+                                   CommandParameter="Self"
+                                   SizeDefinition="Middle">Release self</Fluent:Button>
+                    <Fluent:Button x:Name="releaseAllMmryBtn"
+                                   Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Green.png"
+                                   Command="{Binding Path=ReleaseMemoryCommand}"
+                                   CommandParameter="All"
+                                   SizeDefinition="Middle">Release All</Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
 
