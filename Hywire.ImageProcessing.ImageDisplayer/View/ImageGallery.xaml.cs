@@ -67,5 +67,38 @@ namespace Hywire.ImageProcessing.ImageDisplayer.View
             //}
         }
 
+        private void IMG_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void IMG_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var img = sender as ContentControl;
+            if (img == null)
+            {
+                return;
+            }
+            var point = e.GetPosition(img);
+            var group = image.FindResource("Imageview") as TransformGroup;
+            var delta = e.Delta * 0.001;
+            DowheelZoom(group, point, delta);
+        }
+        private void DowheelZoom(TransformGroup group, Point point, double delta)
+        {
+            var pointToContent = group.Inverse.Transform(point);
+            var transform = group.Children[0] as ScaleTransform;
+            //if (transform.ScaleX + delta < 0.1)
+            //{
+            //    return;
+            //}
+            transform.ScaleX += delta;
+            transform.ScaleY += delta;
+            var transform1 = group.Children[1] as TranslateTransform;
+            transform1.X = -1 * ((pointToContent.X * transform.ScaleX) - point.X);
+            transform1.Y = -1 * ((pointToContent.Y * transform.ScaleY) - point.Y);
+        }
+
+
     }
 }

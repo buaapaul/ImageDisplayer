@@ -15,6 +15,7 @@ using System.Windows;
 using System.Threading;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
 {
@@ -48,9 +49,12 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         RelayCommand _OpenImageCommand = null;
         RelayCommand _CloseImageCommand = null;
         RelayCommand _ReleaseMemoryCommand = null;
+
+        bool _IsImageLoaded = false;
         #endregion Private Fields
 
         static Workspace _this = new Workspace();
+
         public static Workspace This
         {
             get { return _this; }
@@ -77,6 +81,8 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         public void ExecuteOpenImageComand(object parameter)
         {
             OpenFileDialog opDlg = new OpenFileDialog();
+            opDlg.Filter = "jpg|*.jpg|tiff|*.tif";
+            opDlg.FilterIndex = 2;
             if (opDlg.ShowDialog() == true)
             {
                 //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
@@ -91,6 +97,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                     ImageGalleryVM.DisplayImage = image;
                 }
                 Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
+                Workspace.This.IsImageLoaded = true;
                 //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
             }
             Task.Run(() =>
@@ -156,6 +163,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             Task.Run(() =>
             {
                 ImageGalleryVM.DisplayImage = null;
+                Workspace.This.IsImageLoaded = false;
                 Thread.Sleep(1000);     // wait for UI thread to release resources
                 Title = SoftwareName;
                 ClearMemory(Process.GetCurrentProcess());
@@ -223,6 +231,20 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             get
             {
                 return _ImageGalleryVM;
+            }
+        }
+
+        public bool IsImageLoaded
+        {
+            get
+            {
+                return _IsImageLoaded;
+            }
+
+            set
+            {
+                _IsImageLoaded = value;
+                RaisePropertyChanged("IsImageLoaded");
             }
         }
         #endregion Public Properties

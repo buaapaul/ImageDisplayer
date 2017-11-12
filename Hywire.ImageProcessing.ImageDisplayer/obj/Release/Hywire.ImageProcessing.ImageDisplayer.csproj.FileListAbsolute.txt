@@ -34,3 +34,11 @@ E:\Users\paul\Documents\Visual Studio 2015\Projects\C_Sharp_Study\Works\Hywire.I
 E:\Users\paul\Documents\Visual Studio 2015\Projects\C_Sharp_Study\Works\Hywire.ImageProcessing\Hywire.ImageProcessing.ImageDisplayer\obj\Release\Hywire.ImageProcessing.ImageDisplayer.exe
 E:\Users\paul\Documents\Visual Studio 2015\Projects\C_Sharp_Study\Works\Hywire.ImageProcessing\Hywire.ImageProcessing.ImageDisplayer\obj\Release\Hywire.ImageProcessing.ImageDisplayer.pdb
 E:\Users\paul\Documents\Visual Studio 2015\Projects\C_Sharp_Study\Works\Hywire.ImageProcessing\Hywire.ImageProcessing.ImageDisplayer\obj\Release\Hywire.ImageProcessing.ImageDisplayer.csprojResolveAssemblyReference.cache
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\MainWindow.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\MainWindowContent.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\View\ContrastControl.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\View\ImageGallery.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\App.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\GeneratedInternalTypeHelper.g.cs
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\Hywire.ImageProcessing.ImageDisplayer_MarkupCompile.cache
+E:\Users\paul\Documents\Visual Studio 2015\Projects\Works\ImageDisplayer\Hywire.ImageProcessing.ImageDisplayer\obj\Release\Hywire.ImageProcessing.ImageDisplayer_MarkupCompile.lref

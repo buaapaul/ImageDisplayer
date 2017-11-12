@@ -12,7 +12,6 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
     public class ImageGalleryViewModel : ViewModelBase
     {
         private BitmapImage _DisplayImage;
-        private WriteableBitmap _WriteableDisplayImage;
         public BitmapImage DisplayImage
         {
             get
@@ -28,21 +27,5 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                 }
             }
         }
-
-        //public WriteableBitmap DisplayImage
-        //{
-        //    get
-        //    {
-        //        return _WriteableDisplayImage;
-        //    }
-        //    set
-        //    {
-        //        if (_WriteableDisplayImage != value)
-        //        {
-        //            _WriteableDisplayImage = value;
-        //            RaisePropertyChanged("DisplayImage");
-        //        }
-        //    }
-        //}
     }
 }

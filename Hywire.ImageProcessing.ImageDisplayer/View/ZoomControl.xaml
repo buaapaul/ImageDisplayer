@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="Hywire.ImageProcessing.ImageDisplayer.View.ZoomControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition Width="100*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" VerticalAlignment="Center">
+            Zoom
+        </TextBlock>
+        <Grid Grid.Column="1">
+            <Button Content="&#xE738;" HorizontalAlignment="Left" 
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Width="20" Height="20"/>
+            <Slider Height="20" Margin="25,0,25,0" HorizontalAlignment="Stretch"/>
+            <Button Content="&#xE710;" HorizontalAlignment="Right" 
+                    HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                    Width="20" Height="20"/>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -23,8 +23,23 @@
                         Panes="{Binding Panes}" />
             </AdornerDecorator>
         </-->
-        <Border Background="White">
-            <Image x:Name="image" Source="{Binding Path=DisplayImage, IsAsync=True}"/>
-        </Border>
+        <Grid x:Name="imageGrid" Background="White">
+            <Grid.Resources>
+                <TransformGroup x:Key="Imageview">
+                    <ScaleTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Grid.Resources>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False">
+                <ContentControl 
+                    MouseLeftButtonDown="IMG_MouseLeftButtonDown" MouseWheel="IMG_MouseWheel">
+                    <Image x:Name="image" Source="{Binding Path=DisplayImage, IsAsync=True}" 
+                           Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                           RenderTransform="{StaticResource Imageview}">
+                    </Image>
+                </ContentControl>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>
