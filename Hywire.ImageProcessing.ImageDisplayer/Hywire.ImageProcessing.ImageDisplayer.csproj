@@ -84,6 +84,7 @@
       <DependentUpon>MainWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="RealGammaConverter.cs" />
+    <Compile Include="ViewModel\ContrastControlViewModel.cs" />
     <Compile Include="ViewModel\ImageGalleryViewModel.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
     <Compile Include="View\ContrastControl.xaml.cs">

@@ -45,6 +45,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         string _Title = string.Empty;
 
         ImageGalleryViewModel _ImageGalleryVM = null;
+        ContrastControlViewModel _ContrastControlVM = null;
 
         RelayCommand _OpenImageCommand = null;
         RelayCommand _CloseImageCommand = null;
@@ -64,6 +65,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         {
             Title = SoftwareName;
             _ImageGalleryVM = new ImageGalleryViewModel();
+            _ContrastControlVM = new ContrastControlViewModel();
         }
 
         #region OpenImageCommand
@@ -87,14 +89,22 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             {
                 //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
                 //GC.Collect();
+                //Uri fileUri = new Uri(opDlg.FileName);
+                //BitmapDecoder decoder = BitmapDecoder.Create(fileUri, BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
+                //BitmapFrame image = decoder.Frames[0];
+                //Workspace.This.Owner.mainWindow.imageGallery.image.Source = image;
+
                 BitmapImage image = new BitmapImage();
                 using (FileStream fs = File.OpenRead(opDlg.FileName))
                 {
                     image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
                     image.StreamSource = fs;
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.CreateOptions = BitmapCreateOptions.None;
+                    //image.DecodePixelWidth = 1000;
                     image.EndInit();
-                    ImageGalleryVM.DisplayImage = image;
+                    ImageGalleryVM.DisplayImage = ContrastControlVM.GetImageData(image);
+                    image = null;
                 }
                 Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
                 Workspace.This.IsImageLoaded = true;
@@ -245,6 +255,14 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             {
                 _IsImageLoaded = value;
                 RaisePropertyChanged("IsImageLoaded");
+            }
+        }
+
+        public ContrastControlViewModel ContrastControlVM
+        {
+            get
+            {
+                return _ContrastControlVM;
             }
         }
         #endregion Public Properties

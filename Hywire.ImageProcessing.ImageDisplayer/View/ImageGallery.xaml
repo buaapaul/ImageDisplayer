@@ -31,14 +31,14 @@
                 </TransformGroup>
             </Grid.Resources>
 
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Focusable="False">
-                <ContentControl 
-                    MouseLeftButtonDown="IMG_MouseLeftButtonDown" MouseWheel="IMG_MouseWheel">
-                    <Image x:Name="image" Source="{Binding Path=DisplayImage, IsAsync=True}" 
+            <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled"
+                          Panel.ZIndex="-10" >
+                <Grid MouseWheel="IMG_MouseWheel">
+                    <Image x:Name="image" Source="{Binding Path=DisplayImage}"
                            Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor"
                            RenderTransform="{StaticResource Imageview}">
                     </Image>
-                </ContentControl>
+                </Grid>
             </ScrollViewer>
         </Grid>
     </Grid>

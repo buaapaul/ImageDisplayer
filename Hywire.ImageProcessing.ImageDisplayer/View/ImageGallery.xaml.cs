@@ -74,7 +74,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.View
 
         private void IMG_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var img = sender as ContentControl;
+            var img = sender as Grid;
             if (img == null)
             {
                 return;
@@ -88,10 +88,10 @@ namespace Hywire.ImageProcessing.ImageDisplayer.View
         {
             var pointToContent = group.Inverse.Transform(point);
             var transform = group.Children[0] as ScaleTransform;
-            //if (transform.ScaleX + delta < 0.1)
-            //{
-            //    return;
-            //}
+            if (transform.ScaleX + delta < 0.1)
+            {
+                return;
+            }
             transform.ScaleX += delta;
             transform.ScaleY += delta;
             var transform1 = group.Children[1] as TranslateTransform;

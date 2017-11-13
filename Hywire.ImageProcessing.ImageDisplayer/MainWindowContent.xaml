@@ -87,10 +87,10 @@
                                   KeyTip="V"
                                   ToolTip="View Tool Tip">
                 <Fluent:RibbonGroupBox x:Name="displayRangeGroupBox"
-                                       Width="300"
+                                       Width="auto"
                                        Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Default.png"
                                        Header="Display Range">
-                    <view:ContrastControl IsEnabled="{Binding Path=IsImageLoaded}"/>
+                    <view:ContrastControl IsEnabled="{Binding Path=IsImageLoaded}" DataContext="{Binding Path=ContrastControlVM}"/>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
