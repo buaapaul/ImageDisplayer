@@ -66,11 +66,6 @@
                 Orientation="Horizontal"
                 SmallChange="10"
                 Value="{Binding Path=BlackValue, UpdateSourceTrigger=PropertyChanged}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="PreviewMouseLeftButtonUp">
-                        <i:InvokeCommandAction Command="{Binding BlackValueChangedCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </Slider>
 
             <Slider

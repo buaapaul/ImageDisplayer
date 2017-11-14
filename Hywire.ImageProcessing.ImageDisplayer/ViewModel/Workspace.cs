@@ -94,18 +94,20 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                 //BitmapFrame image = decoder.Frames[0];
                 //Workspace.This.Owner.mainWindow.imageGallery.image.Source = image;
 
-                BitmapImage image = new BitmapImage();
-                using (FileStream fs = File.OpenRead(opDlg.FileName))
-                {
-                    image.BeginInit();
-                    image.StreamSource = fs;
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.CreateOptions = BitmapCreateOptions.None;
-                    //image.DecodePixelWidth = 1000;
-                    image.EndInit();
-                    ImageGalleryVM.DisplayImage = ContrastControlVM.GetImageData(image);
-                    image = null;
-                }
+                //BitmapImage image = new BitmapImage();
+                //using (FileStream fs = File.OpenRead(opDlg.FileName))
+                //{
+                //    image.BeginInit();
+                //    image.StreamSource = fs;
+                //    image.CacheOption = BitmapCacheOption.OnLoad;
+                //    image.CreateOptions = BitmapCreateOptions.None;
+                //    //image.DecodePixelWidth = 1000;
+                //    image.EndInit();
+                //}
+                ImageGalleryVM.WriteableBackImage = LoadWriteableImage(opDlg.FileName);
+                ImageGalleryVM.DisplayImage = new WriteableBitmap(ImageGalleryVM.WriteableBackImage.PixelWidth,
+                    ImageGalleryVM.WriteableBackImage.PixelHeight, 96, 96, PixelFormats.Gray8, null);
+                //                ImageGalleryVM.DisplayImage = LoadWriteableImage(opDlg.FileName);
                 Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
                 Workspace.This.IsImageLoaded = true;
                 //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
