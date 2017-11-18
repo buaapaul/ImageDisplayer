@@ -12,10 +12,8 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
 {
     public class ImageGalleryViewModel : ViewModelBase
     {
-        private WriteableBitmap _DisplayImage;
-        private WriteableBitmap _WriteableBackImage;
-        private BitmapImage _BackImage;
-        public WriteableBitmap DisplayImage
+        private BitmapImage _DisplayImage;
+        public BitmapImage DisplayImage
         {
             get
             {
@@ -27,35 +25,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                 {
                     _DisplayImage = value;
                     RaisePropertyChanged("DisplayImage");
-                    //if(_DisplayImage != null)
-                    //{
-                    //    using(MemoryStream stream=new MemoryStream())
-                    //    {
-                    //        TiffBitmapEncoder encoder = new TiffBitmapEncoder();
-                    //        encoder.Frames.Add(BitmapFrame.Create(_DisplayImage));
-                    //        encoder.Save(stream);
-                    //        _BackImage = new BitmapImage();
-                    //        _BackImage.BeginInit();
-                    //        _BackImage.CacheOption = BitmapCacheOption.OnLoad;
-                    //        _BackImage.StreamSource = stream;
-                    //        _BackImage.EndInit();
-                    //        _BackImage.Freeze();
-                    //    }
-                    //}
                 }
-            }
-        }
-
-        public WriteableBitmap WriteableBackImage
-        {
-            get
-            {
-                return _WriteableBackImage;
-            }
-
-            set
-            {
-                _WriteableBackImage = value;
             }
         }
     }

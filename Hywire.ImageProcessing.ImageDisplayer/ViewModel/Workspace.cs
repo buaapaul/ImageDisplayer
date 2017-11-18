@@ -46,10 +46,14 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
 
         ImageGalleryViewModel _ImageGalleryVM = null;
         ContrastControlViewModel _ContrastControlVM = null;
+        CreateImageViewModel _CreateImageVM = null;
 
         RelayCommand _OpenImageCommand = null;
         RelayCommand _CloseImageCommand = null;
         RelayCommand _ReleaseMemoryCommand = null;
+        RelayCommand _NewImageCommand = null;
+
+        CreateImageWindow _CreateImageWind = null;
 
         bool _IsImageLoaded = false;
         #endregion Private Fields
@@ -66,6 +70,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             Title = SoftwareName;
             _ImageGalleryVM = new ImageGalleryViewModel();
             _ContrastControlVM = new ContrastControlViewModel();
+            _CreateImageVM = new CreateImageViewModel();
         }
 
         #region OpenImageCommand
@@ -94,23 +99,20 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                 //BitmapFrame image = decoder.Frames[0];
                 //Workspace.This.Owner.mainWindow.imageGallery.image.Source = image;
 
-                //BitmapImage image = new BitmapImage();
-                //using (FileStream fs = File.OpenRead(opDlg.FileName))
-                //{
-                //    image.BeginInit();
-                //    image.StreamSource = fs;
-                //    image.CacheOption = BitmapCacheOption.OnLoad;
-                //    image.CreateOptions = BitmapCreateOptions.None;
-                //    //image.DecodePixelWidth = 1000;
-                //    image.EndInit();
-                //}
-                ImageGalleryVM.WriteableBackImage = LoadWriteableImage(opDlg.FileName);
-                ImageGalleryVM.DisplayImage = new WriteableBitmap(ImageGalleryVM.WriteableBackImage.PixelWidth,
-                    ImageGalleryVM.WriteableBackImage.PixelHeight, 96, 96, PixelFormats.Gray8, null);
-                //                ImageGalleryVM.DisplayImage = LoadWriteableImage(opDlg.FileName);
+                BitmapImage image = new BitmapImage();
+                using (FileStream fs = File.OpenRead(opDlg.FileName))
+                {
+                    image.BeginInit();
+                    image.StreamSource = fs;
+                    image.CacheOption = BitmapCacheOption.OnLoad;
+                    image.CreateOptions = BitmapCreateOptions.None;
+                    //image.DecodePixelWidth = 1000;
+                    image.EndInit();
+                    ImageGalleryVM.DisplayImage = image;
+                }
+
                 Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
                 Workspace.This.IsImageLoaded = true;
-                //ImageGalleryVM.DisplayImage = LoadImage(opDlg.FileName);
             }
             Task.Run(() =>
             {
@@ -186,6 +188,30 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             return ImageGalleryVM.DisplayImage != null;
         }
         #endregion CloseImageCommand
+
+        #region NewImageCommand
+        public ICommand NewImageCommand
+        {
+            get
+            {
+                if (_NewImageCommand == null)
+                {
+                    _NewImageCommand = new RelayCommand(ExecuteNewImageCommand, CanExecuteNewImageCommand);
+                }
+                return _NewImageCommand;
+            }
+        }
+        public void ExecuteNewImageCommand(object parameter)
+        {
+            _CreateImageWind = new CreateImageWindow();
+            _CreateImageWind.DataContext = This.CreateImageVM;
+            _CreateImageWind.ShowDialog();
+        }
+        public bool CanExecuteNewImageCommand(object parameter)
+        {
+            return true;
+        }
+        #endregion NewImageCommand
 
         #region ReleaseMemoryCommand
         public ICommand ReleaseMemoryCommand
@@ -265,6 +291,22 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             get
             {
                 return _ContrastControlVM;
+            }
+        }
+
+        public CreateImageViewModel CreateImageVM
+        {
+            get
+            {
+                return _CreateImageVM;
+            }
+        }
+
+        public CreateImageWindow CreateImageWind
+        {
+            get
+            {
+                return _CreateImageWind;
             }
         }
         #endregion Public Properties

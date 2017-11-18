@@ -76,9 +76,9 @@
                 VerticalAlignment="Center"
                 LargeChange="256"
                 Maximum="65535"
-                Minimum="1"
+                Minimum="0"
                 Orientation="Horizontal"
-                SmallChange="10"
+                SmallChange="1"
                 Value="{Binding Path=WhiteValue, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseLeftButtonUp">

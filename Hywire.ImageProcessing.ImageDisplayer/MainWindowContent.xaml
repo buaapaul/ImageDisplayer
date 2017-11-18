@@ -26,6 +26,10 @@
                                        Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Open.png"
                                        Command="{Binding Path=OpenImageCommand}"
                                        KeyTip="S" />
+                        <Fluent:Button Header="New..."
+                                       Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/BlueLarge.png"
+                                       Command="{Binding Path=NewImageCommand}"
+                                       KeyTip="S" />
                         <Fluent:SeparatorTabItem/>
                         <Fluent:Button Header="Save"
                                            Icon="pack://application:,,,/Hywire.ImageProcessing.ImageDisplayer;component/Images/Save.png"

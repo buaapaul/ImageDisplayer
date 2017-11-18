@@ -1,28 +1,19 @@
-﻿<UserControl x:Name="userControl" x:Class="Hywire.ImageProcessing.ImageDisplayer.View.ImageGallery"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:avalonDock="clr-namespace:AvalonDock;assembly=AvalonDock"
-             xmlns:avalonDockMVVM="clr-namespace:AvalonDockMVVM;assembly=AvalonDockMVVM"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
-             mc:Ignorable="d" 
-             DataContext="{Binding Path=ImageGalleryVM}"
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:avalonDock="clr-namespace:AvalonDock;assembly=AvalonDock"
+    xmlns:avalonDockMVVM="clr-namespace:AvalonDockMVVM;assembly=AvalonDockMVVM"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
+    xmlns:ee="http://schemas.microsoft.com/expression/2010/effects"
+    xmlns:HywireEffects="clr-namespace:Hywire.ShaderEffectLibrary;assembly=Hywire.ShaderEffectLibrary"
+    xmlns:ImageDisplayer="clr-namespace:Hywire.ImageProcessing.ImageDisplayer" 
+    x:Name="userControl" x:Class="Hywire.ImageProcessing.ImageDisplayer.View.ImageGallery"
+    mc:Ignorable="d" 
+    DataContext="{Binding ImageGalleryVM}"
+    d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <!--Border>
-            <AdornerDecorator>
-                <avalonDockMVVM:AvalonDockHost
-                        x:Name="AvalonDockHost"
-                        ActiveDocument="{Binding ActiveDocument}"
-                        ActivePane="{Binding ActivePane}"
-                        AvalonDockLoaded="avalonDockHost_AvalonDockLoaded"
-                        DocumentClosing="avalonDockHost_DocumentClosing"
-                        Documents="{Binding Files}"
-                        ForceCursor="True"
-                        Panes="{Binding Panes}" />
-            </AdornerDecorator>
-        </-->
         <Grid x:Name="imageGrid" Background="White">
             <Grid.Resources>
                 <TransformGroup x:Key="Imageview">
@@ -34,9 +25,17 @@
             <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled"
                           Panel.ZIndex="-10" >
                 <Grid MouseWheel="IMG_MouseWheel">
-                    <Image x:Name="image" Source="{Binding Path=DisplayImage}"
-                           Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                    <Image x:Name="image" Source="{Binding DisplayImage}"
+                           Stretch="Uniform"
                            RenderTransform="{StaticResource Imageview}">
+                        <Image.Effect>
+                            <!--ee:BloomEffect 
+                                BloomIntensity="{Binding DataContext.ContrastControlVM.GammaValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}" 
+                                BaseSaturation="1" BaseIntensity="1" BloomSaturation="1.2" Threshold="0.5"/>-->
+                            <HywireEffects:DisplayRangeEffect
+                                LowRange="{Binding DataContext.ContrastControlVM.NormalizedBlackValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}"
+                                HighRange="{Binding DataContext.ContrastControlVM.NormalizedWhiteValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}"/>
+                        </Image.Effect>
                     </Image>
                 </Grid>
             </ScrollViewer>

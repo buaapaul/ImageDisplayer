@@ -36,6 +36,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AvalonDock">
@@ -53,10 +54,8 @@
     <Reference Include="Fluent">
       <HintPath>Libs\Fluent.dll</HintPath>
     </Reference>
-    <Reference Include="Magick.NET-Q16-AnyCPU, Version=7.0.0.0, Culture=neutral, PublicKeyToken=2004825badfa91ec, processorArchitecture=MSIL">
-      <HintPath>..\packages\Magick.NET-Q16-AnyCPU.7.0.7.900\lib\net40\Magick.NET-Q16-AnyCPU.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
+    <Reference Include="Microsoft.Expression.Effects, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -81,11 +80,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CreateImageWindow.xaml.cs">
+      <DependentUpon>CreateImageWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindowContent.xaml.cs">
       <DependentUpon>MainWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="RealGammaConverter.cs" />
     <Compile Include="ViewModel\ContrastControlViewModel.cs" />
+    <Compile Include="ViewModel\CreateImageViewModel.cs" />
     <Compile Include="ViewModel\ImageGalleryViewModel.cs" />
     <Compile Include="ViewModel\Workspace.cs" />
     <Compile Include="View\ContrastControl.xaml.cs">
@@ -97,6 +100,10 @@
     <Compile Include="View\ZoomControl.xaml.cs">
       <DependentUpon>ZoomControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="CreateImageWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -208,6 +215,12 @@
   <ItemGroup>
     <Resource Include="Images\Open.png" />
     <Resource Include="Images\OpenLarge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ShaderEffectLibrary\Hywire.ShaderEffectLibrary.csproj">
+      <Project>{8e12404a-0678-4c05-8056-4595f16a6bcb}</Project>
+      <Name>Hywire.ShaderEffectLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
