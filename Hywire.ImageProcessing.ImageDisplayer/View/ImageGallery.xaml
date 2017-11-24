@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:local="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.View"
+    xmlns:vm="clr-namespace:Hywire.ImageProcessing.ImageDisplayer.ViewModel"
     xmlns:ee="http://schemas.microsoft.com/expression/2010/effects"
     xmlns:HywireEffects="clr-namespace:Hywire.ShaderEffectLibrary;assembly=Hywire.ShaderEffectLibrary"
     xmlns:ImageDisplayer="clr-namespace:Hywire.ImageProcessing.ImageDisplayer" 
@@ -14,31 +15,42 @@
     DataContext="{Binding ImageGalleryVM}"
     d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid x:Name="imageGrid" Background="White">
-            <Grid.Resources>
-                <TransformGroup x:Key="Imageview">
-                    <ScaleTransform/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Grid.Resources>
-
-            <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled"
-                          Panel.ZIndex="-10" >
-                <Grid MouseWheel="IMG_MouseWheel">
-                    <Image x:Name="image" Source="{Binding DisplayImage}"
-                           Stretch="Uniform"
-                           RenderTransform="{StaticResource Imageview}">
+        <Border x:Name="_ImageBorder" BorderBrush="#ABC7DF">
+            <ScrollViewer x:Name="_ScrollViewer" 
+                          HorizontalAlignment="Stretch"
+                          VerticalAlignment="Stretch"
+                          VerticalScrollBarVisibility="Disabled">
+                <Canvas x:Name="_DisplayCanvas" Background="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsManipulationEnabled="False">
+                    <Canvas.RenderTransform>
+                        <MatrixTransform></MatrixTransform>
+                    </Canvas.RenderTransform>
+                    <Image x:Name="_DisplayImage" Source="{Binding Path=DisplayImage}"
+                           Width="{Binding ElementName=_DisplayCanvas, Path=ActualWidth}"
+                           Height="{Binding ElementName=_DisplayCanvas, Path=ActualHeight}"
+                           Stretch="Uniform" Canvas.Left="0" Canvas.Top="0"
+                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                           IsManipulationEnabled="True"
+                           ManipulationStarting="_Image_ManipulationStarting"
+                           ManipulationCompleted="_Image_ManipulationCompleted"
+                           ManipulationDelta="_Image_ManipulationDelta"
+                           MouseMove="_DisplayImage_MouseMove"
+                           MouseWheel="_DisplayImage_MouseWheel"
+                           SizeChanged="_DisplayImage_SizeChanged"
+                           MouseLeftButtonDown="_DisplayImage_MouseLeftButtonDown"
+                           MouseLeftButtonUp="_DisplayImage_MouseLeftButtonUp"
+                           RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.RenderTransform>
+                            <MatrixTransform></MatrixTransform>
+                        </Image.RenderTransform>
                         <Image.Effect>
-                            <!--ee:BloomEffect 
-                                BloomIntensity="{Binding DataContext.ContrastControlVM.GammaValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}" 
-                                BaseSaturation="1" BaseIntensity="1" BloomSaturation="1.2" Threshold="0.5"/>-->
-                            <HywireEffects:DisplayRangeEffect
-                                LowRange="{Binding DataContext.ContrastControlVM.NormalizedBlackValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}"
-                                HighRange="{Binding DataContext.ContrastControlVM.NormalizedWhiteValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindow}}}"/>
+                            <HywireEffects:DisplayRangeEffect 
+                                LowRange="{Binding DataContext.ContrastControlVM.NormalizedBlackValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindowContent}}}" 
+                                HighRange="{Binding DataContext.ContrastControlVM.NormalizedWhiteValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindowContent}}}"
+                                Gamma="{Binding DataContext.ContrastControlVM.GammaValue, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ImageDisplayer:MainWindowContent}}}"/>
                         </Image.Effect>
                     </Image>
-                </Grid>
+                </Canvas>
             </ScrollViewer>
-        </Grid>
+        </Border>
     </Grid>
 </UserControl>

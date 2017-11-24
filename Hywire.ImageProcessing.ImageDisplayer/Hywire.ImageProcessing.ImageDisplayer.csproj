@@ -97,8 +97,8 @@
     <Compile Include="View\ImageGallery.xaml.cs">
       <DependentUpon>ImageGallery.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ZoomControl.xaml.cs">
-      <DependentUpon>ZoomControl.xaml</DependentUpon>
+    <Compile Include="View\PixelInfo.xaml.cs">
+      <DependentUpon>PixelInfo.xaml</DependentUpon>
     </Compile>
     <Page Include="CreateImageWindow.xaml">
       <SubType>Designer</SubType>
@@ -128,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ZoomControl.xaml">
+    <Page Include="View\PixelInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -152,7 +152,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

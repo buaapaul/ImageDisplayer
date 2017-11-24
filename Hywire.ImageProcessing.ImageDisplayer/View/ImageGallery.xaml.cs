@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Hywire.ImageProcessing.ImageDisplayer.ViewModel;
 
 namespace Hywire.ImageProcessing.ImageDisplayer.View
 {
@@ -20,85 +21,286 @@ namespace Hywire.ImageProcessing.ImageDisplayer.View
     /// </summary>
     public partial class ImageGallery : UserControl
     {
-        private string _AdDefaultLayoutResourceName = "Azure.LaserScanner.Resources.AdDefaultLayoutFile.xml";
-        //private string _AdLayoutFileName = System.IO.Path.Combine(Environment.CurrentDirectory, "AdLayoutFile.xml");
-        //private string _AdLayoutFileName = "AdLayoutFile.xml";
-        private bool _IsAvalonLoaded = false;
+        #region Private data...
+
+        private Point origin;  // Original Offset of image
+        private Point start;   // Original Position of the mouse
+
+        private double _ZoomRate = 1;
+        //private double _LastZoomRate = 1;
+        private double _ImageZoomRate = 1;
+        //private MatrixTransform _MatrixTransform;
+
+        private const double _RateStep = 1.1;
+        private double dShiftX = 0;
+        private double dShiftY = 0;
+
+        #endregion
 
         public ImageGallery()
         {
             InitializeComponent();
         }
-        /// <summary>
-        /// Event raised when AvalonDock has loaded.
-        /// Currently only loaidng the default layout.
-        /// </summary>
-        private void avalonDockHost_AvalonDockLoaded(object sender, EventArgs e)
+
+        private void _Image_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
         {
-            //
-            // This line of code can be uncommented to get a list of resources.
-            //
-            //string[] names = this.GetType().Assembly.GetManifestResourceNames();
+            e.ManipulationContainer = _DisplayCanvas;
 
-            //
-            // Load the default AvalonDock layout from an embedded resource.
-            //  private static readonly string DefaultLayoutResourceName = "cSeries.UI.Resources.DefaultLayoutFile.xml";
+            e.Mode = ManipulationModes.Scale | ManipulationModes.Translate;
+        }
 
-            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var stream = assembly.GetManifestResourceStream(_AdDefaultLayoutResourceName))
+        private void _Image_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
+            FrameworkElement element = (FrameworkElement)e.Source;
+            element.Opacity = 1;
+        }
+
+        private void _Image_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            //promised the miniscale is 1
+            double dZoomStep = 1;
+            if (_ZoomRate * e.DeltaManipulation.Scale.X < 1)
             {
-                if (stream != null && !_IsAvalonLoaded)
+                dZoomStep = 1 / _ZoomRate;
+                _ZoomRate = 1;
+            }
+            else
+            {
+                dZoomStep = e.DeltaManipulation.Scale.X;
+                _ZoomRate *= e.DeltaManipulation.Scale.X;
+            }
+
+            double dTanslationX = e.DeltaManipulation.Translation.X;
+            double dTanslationY = e.DeltaManipulation.Translation.Y;
+
+            //manipulate the image is in canvas when image is shifted
+            Point ImageInCanvasPtLT = _DisplayImage.TranslatePoint(new Point(0, 0), _DisplayCanvas);
+            Point ImageInCanvasPtRB = _DisplayImage.TranslatePoint(new Point(_DisplayImage.ActualWidth, _DisplayImage.ActualHeight), _DisplayCanvas);
+            if (_DisplayImage.ActualWidth * _ZoomRate < _DisplayCanvas.ActualWidth)
+            {
+                //dTanslationX = 0;
+                if (dTanslationX < 0)
                 {
-                    //AvalonDockHost.DockingManager.RestoreLayout(stream);
-                    _IsAvalonLoaded = true;
+                    if (ImageInCanvasPtLT.X + dTanslationX < 0)
+                    {
+                        dTanslationX = -ImageInCanvasPtLT.X;
+                    }
+                }
+                else
+                {
+                    if (ImageInCanvasPtRB.X + dTanslationX > _DisplayCanvas.ActualWidth)
+                    {
+                        dTanslationX = _DisplayCanvas.ActualWidth - ImageInCanvasPtRB.X;
+                    }
+                }
+            }
+            else
+            {
+                if (dTanslationX < 0)
+                {
+                    if (ImageInCanvasPtRB.X + dTanslationX < _DisplayCanvas.ActualWidth)
+                    {
+                        dTanslationX = _DisplayCanvas.ActualWidth - ImageInCanvasPtRB.X;
+                    }
+                }
+                else
+                {
+                    if (ImageInCanvasPtLT.X + dTanslationX > 0)
+                    {
+                        dTanslationX = -ImageInCanvasPtLT.X;
+                    }
+                }
+            }
+
+            if (_DisplayImage.ActualHeight * _ZoomRate < _DisplayCanvas.ActualHeight)
+            {
+                //dTanslationY = 0;
+                if (dTanslationY < 0)
+                {
+                    if (ImageInCanvasPtLT.Y + dTanslationY < 0)
+                    {
+                        dTanslationY = -ImageInCanvasPtLT.Y;
+                    }
+                }
+                else
+                {
+                    if (ImageInCanvasPtRB.Y + dTanslationY > _DisplayCanvas.ActualHeight)
+                    {
+                        dTanslationY = _DisplayCanvas.ActualHeight - ImageInCanvasPtRB.Y;
+                    }
+                }
+            }
+            else
+            {
+                if (dTanslationY < 0)
+                {
+                    if (ImageInCanvasPtRB.Y + dTanslationY < _DisplayCanvas.ActualHeight)
+                    {
+                        dTanslationY = _DisplayCanvas.ActualHeight - ImageInCanvasPtRB.Y;
+                    }
+                }
+                else
+                {
+                    if (ImageInCanvasPtLT.Y + dTanslationY > 0)
+                    {
+                        dTanslationY = -ImageInCanvasPtLT.Y;
+                    }
+                }
+            }
+
+            //shift
+            dShiftX += dTanslationX;
+            dShiftY += dTanslationY;
+
+            FrameworkElement element = (FrameworkElement)e.Source;
+            //element.Opacity = 0.5;
+
+            Matrix matrix = ((MatrixTransform)element.RenderTransform).Matrix;
+
+            var deltaManipulation = e.DeltaManipulation;
+
+            Point center = new Point(_ImageBorder.ActualWidth / 2, _ImageBorder.ActualHeight / 2);
+            center = _ImageBorder.TranslatePoint(center, _DisplayImage);
+
+            matrix.ScaleAt(dZoomStep, dZoomStep, center.X, center.Y);
+            matrix.Translate(dTanslationX, dTanslationY);
+
+            ((MatrixTransform)element.RenderTransform).Matrix = matrix;
+            //_LastZoomRate = _ZoomRate;
+        }
+
+        private void _DisplayImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            ImageGalleryViewModel viewModel = (ImageGalleryViewModel)DataContext;
+            if (viewModel == null) { return; }
+
+            if (_DisplayImage.Source == null)
+            {
+                return;
+            }
+
+            Point point = new Point((e.GetPosition(_DisplayImage).X * _ImageZoomRate), (e.GetPosition(_DisplayImage).Y * _ImageZoomRate));
+
+            viewModel.PixelX = ((int)point.X);
+            viewModel.PixelY = ((int)point.Y);
+
+            byte[] pixels = new byte[viewModel.DisplayImage.Format.BitsPerPixel / 8];
+            var stride = viewModel.DisplayImage.Format.BitsPerPixel / 8 * viewModel.DisplayImage.PixelWidth;
+            var offset = viewModel.PixelY * stride + viewModel.PixelX * viewModel.DisplayImage.Format.BitsPerPixel / 8;
+            viewModel.DisplayImage.CopyPixels(new Int32Rect(viewModel.PixelX, viewModel.PixelY, 1, 1), pixels, stride, 0);
+
+            if (viewModel.DisplayImage.Format == PixelFormats.Rgb24)
+            {
+                viewModel.PixelIntensity = string.Format("R: {0} G: {1} B: {2}", pixels[0], pixels[1], pixels[2]);
+            }
+            else if (viewModel.DisplayImage.Format == PixelFormats.Gray16)
+            {
+                viewModel.PixelIntensity = string.Format("{0}", pixels[1] * 255 + pixels[0]);
+            }
+
+            if (_DisplayImage.IsMouseCaptured)
+            {
+                Point p = e.MouseDevice.GetPosition(_DisplayCanvas);
+
+                Matrix m = _DisplayImage.RenderTransform.Value;
+                //m.OffsetX = origin.X + (p.X - start.X);
+                //m.OffsetY = origin.Y + (p.Y - start.Y);
+                double deltaX = origin.X + (p.X - start.X);
+                double deltaY = origin.Y + (p.Y - start.Y);
+
+                if (p.X > 0 && p.Y > 0 && p.X < _DisplayCanvas.ActualWidth && p.Y < _DisplayCanvas.ActualHeight)
+                {
+                    //m.OffsetX = deltaX;
+                    //Matrix m = _DisplayImage.RenderTransform.Value;
+                    //m.Translate(deltaX, deltaY);
+                    m.OffsetX = deltaX;
+                    m.OffsetY = deltaY;
+
+                    _DisplayImage.RenderTransform = new MatrixTransform(m);
+                    //_DisplayImage.ReleaseMouseCapture();
+                    //viewModel.Matrix = _DisplayImage.RenderTransform.Value;
+                }
+            }
+        }
+
+        private void _DisplayImage_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_DisplayImage.Source == null) { return; }
+
+            Point p = e.MouseDevice.GetPosition(_DisplayImage);
+
+            Matrix m = _DisplayImage.RenderTransform.Value;
+            if (e.Delta > 0)
+            {
+                _ZoomRate *= _RateStep;
+                m.ScaleAtPrepend(_RateStep, _RateStep, p.X, p.Y);
+                _DisplayImage.RenderTransform = new MatrixTransform(m);
+            }
+            else
+            {
+                if (_ZoomRate / _RateStep < 1.0)
+                {
+                    _ZoomRate = 1.0;
+                }
+                else
+                {
+                    _ZoomRate /= _RateStep;
+                }
+
+                if (_ZoomRate == 1)
+                {
+                    RecoverTransform();
+                }
+                else
+                {
+                    m.ScaleAtPrepend(1 / _RateStep, 1 / _RateStep, p.X, p.Y);
+                    _DisplayImage.RenderTransform = new MatrixTransform(m);
                 }
             }
         }
 
         /// <summary>
-        /// Event raised when a document is being closed by clicking the 'X' button in AvalonDock.
+        /// Fit display image to window
         /// </summary>
-        private void avalonDockHost_DocumentClosing(object sender, AvalonDockMVVM.DocumentClosingEventArgs e)
+        public void RecoverTransform()
         {
-            //var document = (FileViewModel)e.Document;
-            //if (!Workspace.This.Close(document))
-            //{
-            //    e.Cancel = true;
-            //}
+            _DisplayImage.RenderTransform = new MatrixTransform(_ZoomRate, 0, 0, _ZoomRate, -dShiftX, -dShiftY);
+            dShiftX = 0;
+            dShiftY = 0;
+            _DisplayImage.RenderTransform = new MatrixTransform(1, 0, 0, 1, -dShiftX, -dShiftY);
         }
 
-        private void IMG_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void _DisplayImage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-
-        }
-
-        private void IMG_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var img = sender as Grid;
-            if (img == null)
+            if (_DisplayImage.Source == null)
             {
+                _ImageZoomRate = 1.0;
                 return;
             }
-            var point = e.GetPosition(img);
-            var group = image.FindResource("Imageview") as TransformGroup;
-            var delta = e.Delta * 0.001;
-            DowheelZoom(group, point, delta);
-        }
-        private void DowheelZoom(TransformGroup group, Point point, double delta)
-        {
-            var pointToContent = group.Inverse.Transform(point);
-            var transform = group.Children[0] as ScaleTransform;
-            if (transform.ScaleX + delta < 0.1)
+            if (_DisplayImage.ActualWidth < _DisplayImage.Width)
             {
-                return;
+                _ImageZoomRate = ((BitmapImage)_DisplayImage.Source).PixelHeight / _DisplayImage.ActualHeight;
             }
-            transform.ScaleX += delta;
-            transform.ScaleY += delta;
-            var transform1 = group.Children[1] as TranslateTransform;
-            transform1.X = -1 * ((pointToContent.X * transform.ScaleX) - point.X);
-            transform1.Y = -1 * ((pointToContent.Y * transform.ScaleY) - point.Y);
+            else if (_DisplayImage.ActualHeight < _DisplayImage.Height)
+            {
+                _ImageZoomRate = ((BitmapImage)_DisplayImage.Source).PixelWidth / _DisplayImage.ActualWidth;
+            }
         }
 
+        private void _DisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_DisplayImage.IsMouseCaptured) return;
 
+            _DisplayImage.CaptureMouse();
+
+            start = e.GetPosition(_DisplayCanvas);
+            origin.X = _DisplayImage.RenderTransform.Value.OffsetX;
+            origin.Y = _DisplayImage.RenderTransform.Value.OffsetY;
+        }
+
+        private void _DisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            _DisplayImage.ReleaseMouseCapture();
+        }
     }
 }

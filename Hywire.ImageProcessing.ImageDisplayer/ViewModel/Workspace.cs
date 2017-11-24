@@ -41,7 +41,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         }
 
         #region Private Fields
-        const string SoftwareName = "Hywire Image Displayer";
+        public readonly string SoftwareName = "Hywire Image Displayer";
         string _Title = string.Empty;
 
         ImageGalleryViewModel _ImageGalleryVM = null;
@@ -52,6 +52,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         RelayCommand _CloseImageCommand = null;
         RelayCommand _ReleaseMemoryCommand = null;
         RelayCommand _NewImageCommand = null;
+        RelayCommand _SaveAsCommand = null;
 
         CreateImageWindow _CreateImageWind = null;
 
@@ -80,12 +81,12 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             {
                 if (_OpenImageCommand == null)
                 {
-                    _OpenImageCommand = new RelayCommand(ExecuteOpenImageComand, CanExecuteOpenImageComand);
+                    _OpenImageCommand = new RelayCommand(ExecuteOpenImageCommand, CanExecuteOpenImageCommand);
                 }
                 return _OpenImageCommand;
             }
         }
-        public void ExecuteOpenImageComand(object parameter)
+        public void ExecuteOpenImageCommand(object parameter)
         {
             OpenFileDialog opDlg = new OpenFileDialog();
             opDlg.Filter = "jpg|*.jpg|tiff|*.tif";
@@ -99,16 +100,37 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                 //BitmapFrame image = decoder.Frames[0];
                 //Workspace.This.Owner.mainWindow.imageGallery.image.Source = image;
 
-                BitmapImage image = new BitmapImage();
+                //BitmapImage image = new BitmapImage(new Uri(opDlg.FileName));
+                //FormatConvertedBitmap grayImage = new FormatConvertedBitmap();
+                //grayImage.BeginInit();
+                //grayImage.Source = image;
+                //grayImage.DestinationFormat = PixelFormats.Gray16;
+                //grayImage.EndInit();
+                //image = null;
+                //ImageGalleryVM.DisplayImage = grayImage;
+
                 using (FileStream fs = File.OpenRead(opDlg.FileName))
                 {
+                    BitmapImage image = new BitmapImage();
                     image.BeginInit();
                     image.StreamSource = fs;
                     image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.CreateOptions = BitmapCreateOptions.None;
+                    image.CreateOptions = BitmapCreateOptions.None | BitmapCreateOptions.PreservePixelFormat;
                     //image.DecodePixelWidth = 1000;
                     image.EndInit();
+                    image.Freeze();
                     ImageGalleryVM.DisplayImage = image;
+                    if (image.Format == PixelFormats.Gray16)
+                    {
+                        Workspace.This.ContrastControlVM.PixelHighLimit = 65535;
+                        Workspace.This.ContrastControlVM.WhiteValue = 65535;
+                    }
+                    else
+                    {
+                        Workspace.This.ContrastControlVM.PixelHighLimit = 255;
+                        Workspace.This.ContrastControlVM.WhiteValue = 255;
+                    }
+                    image = null;
                 }
 
                 Title = Path.GetFileName(opDlg.FileName) + "-" + SoftwareName;
@@ -118,7 +140,7 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             {
             });
         }
-        public bool CanExecuteOpenImageComand(object parameter)
+        public bool CanExecuteOpenImageCommand(object parameter)
         {
             return true;
         }
@@ -212,6 +234,44 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
             return true;
         }
         #endregion NewImageCommand
+
+        #region SaveAsCommand
+        public ICommand SaveAsCommand
+        {
+            get
+            {
+                if (_SaveAsCommand == null)
+                {
+                    _SaveAsCommand = new RelayCommand(ExecuteSaveAsCommand, CanExecuteSaveAsCommand);
+                }
+                return _SaveAsCommand;
+            }
+        }
+        public void ExecuteSaveAsCommand(object parameter)
+        {
+            SaveFileDialog saveDlg = new SaveFileDialog();
+            saveDlg.Filter = "Tiff(Gray8)|*.tif";
+
+            if (saveDlg.ShowDialog() == true)
+            {
+                FormatConvertedBitmap convertImage = new FormatConvertedBitmap();
+                convertImage.BeginInit();
+                convertImage.Source = Workspace.This.ImageGalleryVM.DisplayImage;
+                convertImage.DestinationFormat = PixelFormats.Gray8;
+                convertImage.EndInit();
+                TiffBitmapEncoder encoder = new TiffBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(convertImage));
+                FileStream fileStream = new FileStream(saveDlg.FileName, FileMode.Create, FileAccess.ReadWrite);
+                encoder.Save(fileStream);
+                fileStream.Close();
+            }
+
+        }
+        public bool CanExecuteSaveAsCommand(object parameter)
+        {
+            return _IsImageLoaded;
+        }
+        #endregion SaveAsCommand
 
         #region ReleaseMemoryCommand
         public ICommand ReleaseMemoryCommand

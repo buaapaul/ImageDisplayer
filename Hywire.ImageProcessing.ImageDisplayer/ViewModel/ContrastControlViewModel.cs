@@ -101,6 +101,18 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
         {
             get { return (double)BlackValue / _PixelHighLimit; }
         }
+        public int PixelHighLimit
+        {
+            get
+            {
+                return _PixelHighLimit;
+            }
+            set
+            {
+                _PixelHighLimit = value;
+                RaisePropertyChanged("PixelHighLimit");
+            }
+        }
         #endregion Public Properties
     }
 }

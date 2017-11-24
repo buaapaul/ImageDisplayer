@@ -13,28 +13,28 @@ float LowRange : register(C0);
 /// <maxValue>1</maxValue>
 /// <defaultValue>1</defaultValue>
 float HighRange : register(C1);
+/// <summary>Gamma</summary>
+/// <minValue>0/minValue>
+/// <maxValue>10</maxValue>
+/// <defaultValue>1</defaultValue>
+float Gamma : register(C2);
 
-float4 main(float2 uv : TEXCOORD) : COLOR 
+float4 main(double2 uv : TEXCOORD) : COLOR 
 { 
 	
 	float4 color; 
-	color= tex2D( input , uv.xy);
+  color= tex2D( input , uv.xy);
+
+  if(color.r>=HighRange) {color.r=1;}
+  else if(color.r<=LowRange) {color.r=0;}
+  else {color.r=pow((color.r-LowRange)/(HighRange-LowRange),1.0/Gamma);}
+  if(color.g>=HighRange) {color.g=1;}
+  else if(color.g<=LowRange) {color.g=0;}
+  else {color.g=pow((color.g-LowRange)/(HighRange-LowRange),1.0/Gamma);}
+  if(color.b>=HighRange) {color.b=1;}
+  else if(color.b<=LowRange) {color.b=0;}
+  else {color.b=pow((color.b-LowRange)/(HighRange-LowRange),1.0/Gamma);}
+//	color.rgb=color.rgb+0.5/(HighRange-LowRange);
 	
-	if( color.r>HighRange ) { color.r=1; }
-	else if( color.r>HighRange ) { color.r=0; }
-	else{ color.r=(color.r-LowRange)/(HighRange-LowRange); }
-
-	if( color.g>HighRange ) { color.g=1; }
-	else if( color.g>HighRange ) { color.g=0; }
-	else{ color.g=(color.g-LowRange)/(HighRange-LowRange); }
-
-	if( color.b>HighRange ) { color.b=1; }
-	else if( color.b>HighRange ) { color.b=0; }
-	else{ color.b=(color.b-LowRange)/(HighRange-LowRange); }
-
-	if( color.a>HighRange ) { color.a=1; }
-	else if( color.a>HighRange ) { color.a=0; }
-	else{ color.a=(color.a-LowRange)/(HighRange-LowRange); }
-
   return color; 
 }

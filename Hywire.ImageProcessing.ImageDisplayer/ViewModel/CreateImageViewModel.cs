@@ -72,6 +72,21 @@ namespace Hywire.ImageProcessing.ImageDisplayer.ViewModel
                     }
                     Workspace.This.CreateImageWind.Close();
                     imgDataBytes = null;
+
+                    using (FileStream fs = File.OpenRead(saveDlg.FileName))
+                    {
+                        BitmapImage remoteImage = new BitmapImage();
+                        remoteImage.BeginInit();
+                        remoteImage.StreamSource = fs;
+                        remoteImage.CacheOption = BitmapCacheOption.OnLoad;
+                        remoteImage.CreateOptions = BitmapCreateOptions.None | BitmapCreateOptions.PreservePixelFormat;
+                        //image.DecodePixelWidth = 1000;
+                        remoteImage.EndInit();
+                        remoteImage.Freeze();
+                        Workspace.This.ImageGalleryVM.DisplayImage = remoteImage;
+                    }
+                    Workspace.This.Title = Path.GetFileName(saveDlg.FileName) + "-" + Workspace.This.SoftwareName;
+                    Workspace.This.IsImageLoaded = true;
                 }
             }
             catch

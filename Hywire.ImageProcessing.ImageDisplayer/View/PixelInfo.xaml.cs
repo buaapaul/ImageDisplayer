@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace Hywire.ImageProcessing.ImageDisplayer.View
 {
     /// <summary>
-    /// ZoomControl.xaml 的交互逻辑
+    /// PixelInfo.xaml 的交互逻辑
     /// </summary>
-    public partial class ZoomControl : UserControl
+    public partial class PixelInfo : UserControl
     {
-        public ZoomControl()
+        public PixelInfo()
         {
             InitializeComponent();
         }

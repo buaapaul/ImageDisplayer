@@ -21,7 +21,8 @@ namespace Hywire.ShaderEffectLibrary {
 		public static readonly DependencyProperty InputProperty = ShaderEffect.RegisterPixelShaderSamplerProperty("Input", typeof(DisplayRangeEffect), 0);
 		public static readonly DependencyProperty LowRangeProperty = DependencyProperty.Register("LowRange", typeof(double), typeof(DisplayRangeEffect), new UIPropertyMetadata(((double)(0D)), PixelShaderConstantCallback(0)));
 		public static readonly DependencyProperty HighRangeProperty = DependencyProperty.Register("HighRange", typeof(double), typeof(DisplayRangeEffect), new UIPropertyMetadata(((double)(1D)), PixelShaderConstantCallback(1)));
-		public DisplayRangeEffect() {
+        public static readonly DependencyProperty GammaProperty = DependencyProperty.Register("Gamma", typeof(double), typeof(DisplayRangeEffect), new UIPropertyMetadata(((double)(1D)), PixelShaderConstantCallback(2)));
+        public DisplayRangeEffect() {
 			PixelShader pixelShader = new PixelShader();
 			pixelShader.UriSource = Global.MakePackUri("ShaderSource/DisplayRangeEffect.ps");
             this.PixelShader = pixelShader;
@@ -29,16 +30,19 @@ namespace Hywire.ShaderEffectLibrary {
 			this.UpdateShaderValue(InputProperty);
 			this.UpdateShaderValue(LowRangeProperty);
 			this.UpdateShaderValue(HighRangeProperty);
-		}
-		public Brush Input {
-			get {
-				return ((Brush)(this.GetValue(InputProperty)));
-			}
-			set {
-				this.SetValue(InputProperty, value);
-			}
-		}
-		public double LowRange {
+            this.UpdateShaderValue(GammaProperty);
+        }
+        public Brush Input {
+            get
+            {
+                return ((Brush)(this.GetValue(InputProperty)));
+            }
+            set
+            {
+                this.SetValue(InputProperty, value);
+            }
+        }
+        public double LowRange {
 			get {
 				return ((double)(this.GetValue(LowRangeProperty)));
 			}
@@ -47,12 +51,25 @@ namespace Hywire.ShaderEffectLibrary {
 			}
 		}
 		public double HighRange {
-			get {
-				return ((double)(this.GetValue(HighRangeProperty)));
-			}
-			set {
-				this.SetValue(HighRangeProperty, value);
-			}
-		}
-	}
+            get
+            {
+                return ((double)(this.GetValue(HighRangeProperty)));
+            }
+            set
+            {
+                this.SetValue(HighRangeProperty, value);
+            }
+        }
+        public double Gamma
+        {
+            get
+            {
+                return ((double)(this.GetValue(GammaProperty)));
+            }
+            set
+            {
+                this.SetValue(GammaProperty, value);
+            }
+        }
+    }
 }
